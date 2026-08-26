@@ -10,8 +10,14 @@ const hitSound = new Audio("./sound/hit_SFX.wav");
 
 window.onload = function() {
     setGame();
-    bgMusic.play();
+    bgMusic.loop = true;
     bgMusic.volume = 0.1;
+
+    const startAudio = () => {
+        bgMusic.play().catch(() => {});
+    };
+    document.addEventListener("pointerdown", startAudio, { once: true });
+    document.addEventListener("keydown", startAudio, { once: true });
 
     const hammer = document.getElementById("hammer");
     const board = document.getElementById("board");
