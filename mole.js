@@ -98,11 +98,21 @@ function selectTile() {
         score += 10;
         document.getElementById("score").innerText = score.toString(); //update score html
         hitSound.play();
+
+        let img = this.querySelector("img");
+        if (img) {
+            img.classList.add("squashed");
+        }
     }
     else if (this == currPlantTile) {
         loseSound.play();
         bgMusic.pause();
         document.getElementById("score").innerText = "GAME OVER: " + score.toString(); //update score html
         gameOver = true;
+
+        let img = this.querySelector("img");
+        if (img) {
+            img.classList.add("squashed");
+        }
     }
 }
