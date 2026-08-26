@@ -11,7 +11,7 @@ const hitSound = new Audio("./sound/hit_SFX.wav");
 window.onload = function() {
     setGame();
     bgMusic.loop = true;
-    bgMusic.volume = 0.1;
+    bgMusic.volume = 0.2;
 
     const startAudio = () => {
         bgMusic.play().catch(() => {});
