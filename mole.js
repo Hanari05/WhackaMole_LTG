@@ -12,6 +12,25 @@ window.onload = function() {
     setGame();
     bgMusic.play();
     bgMusic.volume = 0.1;
+
+    const hammer = document.getElementById("hammer");
+    const board = document.getElementById("board");
+
+    board.addEventListener("mousemove", (e) => {
+        hammer.style.display = "block";
+        hammer.style.left = (e.pageX - hammer.offsetWidth / 2) + "px";
+        hammer.style.top = (e.pageY - hammer.offsetHeight / 2) + "px";
+    });
+
+    board.addEventListener("mouseleave", () => {
+        hammer.classList.add("hit");
+    });
+    board.addEventListener("mousedown", () => {
+        hammer.classList.add("hit");
+    });
+    board.addEventListener("mouseup", () => {
+        hammer.classList.remove("hit");
+    });
 }
 
 function setGame() {
