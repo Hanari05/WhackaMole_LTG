@@ -8,11 +8,79 @@
     <script src="mole.js"></script>
 </head>
 <body>
+    <div id="game-controls">
+        <button id="settings-btn" type="button" aria-label="Open settings">
+            <img src="settings/MenuwBox.png" alt="">
+        </button>
+        <button id="restart-btn" type="button" aria-label="Restart game">
+            <img src="settings/Box.png" alt="" class="control-box">
+            <img src="settings/Restart.png" alt="" class="control-icon">
+        </button>
+    </div>
+
     <h1>Whack a Mole</h1>
     <h2 id="score">0</h2>
     <img id="hammer" src="hammer.png" alt="Hammer">
-    <!-- 3x3 -->
-    <div id="board">
+    <div id="board-wrap">
+        <div id="board">
+        </div>
+        <button id="start-overlay" type="button" aria-label="Start game">
+            <span class="start-title">Click to Start</span>
+            <span class="start-hint">Tap anywhere on the board</span>
+        </button>
+    </div>
+
+    <div id="settings-overlay" class="hidden" aria-hidden="true">
+        <div id="settings-popup">
+            <img class="settings-popup-bg" src="settings/SettingPopup.png" alt="">
+            <div class="settings-content">
+                <div class="settings-body">
+                    <div class="volume-row" data-channel="sfx">
+                        <button type="button" class="volume-icon-btn" aria-label="Toggle sound effects">
+                            <img class="volume-icon" src="settings/SFX.png" alt="">
+                        </button>
+                        <div class="volume-slider">
+                            <div class="slider-rail">
+                                <img class="slider-track" src="settings/Track.png" alt="">
+                                <div class="slider-fill-wrap">
+                                    <img class="slider-fill" src="settings/Progressbar.png" alt="">
+                                </div>
+                                <img class="slider-thumb" src="settings/Thumb.png" alt="">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="volume-row" data-channel="bgm">
+                        <button type="button" class="volume-icon-btn" aria-label="Toggle music">
+                            <img class="volume-icon" src="settings/BGM.png" alt="">
+                        </button>
+                        <div class="volume-slider">
+                            <div class="slider-rail">
+                                <img class="slider-track" src="settings/Track.png" alt="">
+                                <div class="slider-fill-wrap">
+                                    <img class="slider-fill" src="settings/Progressbar.png" alt="">
+                                </div>
+                                <img class="slider-thumb" src="settings/Thumb.png" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-lower">
+                    <div class="settings-footer">
+                        <span class="settings-footer-gap" aria-hidden="true"></span>
+                        <button id="settings-restart-btn" type="button" aria-label="Restart game">
+                            <img src="settings/Restart.png" alt="">
+                        </button>
+                        <span class="settings-footer-gap" aria-hidden="true"></span>
+                        <button id="settings-back" type="button" aria-label="Close settings">
+                            <img src="settings/Back.png" alt="">
+                        </button>
+                        <span class="settings-footer-gap" aria-hidden="true"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

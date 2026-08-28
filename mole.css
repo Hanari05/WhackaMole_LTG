@@ -5,12 +5,17 @@ body {
     background-size: cover;
 }
 
+#board-wrap {
+    position: relative;
+    width: 540px;
+    margin: 0 auto;
+}
+
 #board {
     width: 540px;
     height: 540px;
     /* background-color: green; */
 
-    margin: 0 auto;
     display: flex;
     flex-wrap: wrap;
 
@@ -58,4 +63,285 @@ body {
 }
 .hit {
     transform: rotate(-45deg);
+}
+
+#start-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: none;
+    border-radius: 25px;
+    background: rgba(0, 0, 0, 0.55);
+    cursor: pointer;
+    z-index: 20;
+    padding: 16px;
+}
+
+#start-overlay.hidden {
+    display: none;
+}
+
+.start-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #7cfc00;
+    text-shadow:
+        3px 3px 0 #1a4d00,
+        -1px -1px 0 #1a4d00,
+        1px -1px 0 #1a4d00,
+        -1px 1px 0 #1a4d00;
+    letter-spacing: 0.5px;
+}
+
+.start-hint {
+    font-size: 1rem;
+    color: #fff8dc;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+#start-overlay:hover .start-title,
+#start-overlay:focus-visible .start-title {
+    color: #9aff33;
+}
+
+#start-overlay:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 2px;
+}
+
+/* Top-right controls */
+#game-controls {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 50;
+}
+
+#settings-btn,
+#restart-btn {
+    position: relative;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    width: 56px;
+    height: 56px;
+}
+
+#settings-btn img,
+#restart-btn .control-box {
+    width: 56px;
+    height: 56px;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+#restart-btn .control-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: auto;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+}
+
+#settings-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 200;
+}
+
+#settings-overlay.hidden {
+    display: none;
+}
+
+#settings-popup {
+    position: relative;
+    width: min(420px, 92vw);
+    overflow: hidden;
+    --slider-inset-x: 6px;
+    --slider-fill-height: 54%;
+}
+
+.settings-popup-bg {
+    width: 100%;
+    height: auto;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+}
+
+.settings-content {
+    position: absolute;
+    top: 30%;
+    left: 11%;
+    right: 11%;
+    bottom: 7%;
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-body {
+    flex: 0 0 auto;
+    width: 100%;
+    transform: scale(1.12);
+    transform-origin: top center;
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+    box-sizing: border-box;
+}
+
+.settings-lower {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+}
+
+.settings-footer {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.settings-footer-gap {
+    flex: 1;
+}
+
+#settings-restart-btn,
+#settings-back {
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+#settings-restart-btn img {
+    width: 50px;
+    height: auto;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+#settings-restart-btn:hover img {
+    filter: brightness(1.08);
+}
+
+#settings-restart-btn:focus-visible,
+#settings-back:focus-visible {
+    outline: 2px solid #7cfc00;
+    outline-offset: 2px;
+    border-radius: 8px;
+}
+
+#settings-back img {
+    width: 50px;
+    height: auto;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.volume-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.volume-icon-btn {
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    width: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.volume-icon {
+    width: 50px;
+    height: auto;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.volume-slider {
+    flex: 1;
+    min-width: 0;
+    touch-action: none;
+}
+
+.slider-rail {
+    position: relative;
+    width: 100%;
+    line-height: 0;
+    cursor: pointer;
+}
+
+.slider-track {
+    width: 100%;
+    height: auto;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+}
+
+.slider-fill-wrap {
+    position: absolute;
+    left: var(--slider-inset-x);
+    top: 50%;
+    transform: translateY(-50%);
+    height: var(--slider-fill-height);
+    overflow: hidden;
+    pointer-events: none;
+    border-radius: 999px;
+}
+
+.slider-fill {
+    height: 100%;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+}
+
+.slider-thumb {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: calc(var(--slider-fill-height) + 14px);
+    width: auto;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-drag: none;
+    touch-action: none;
+    z-index: 1;
+}
+
+.slider-thumb:active {
+    cursor: grabbing;
 }
