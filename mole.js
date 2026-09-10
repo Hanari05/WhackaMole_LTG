@@ -170,6 +170,8 @@ function restartGame() {
     lives = MAX_LIVES;
     gameOver = false;
     currMoleTile = null;
+    currMoleType = "regular";
+    currMoleHp = 0;
     currPlantTiles.clear();
     stopSpawnTimers();
 
@@ -183,14 +185,7 @@ function restartGame() {
     const hammer = document.getElementById("hammer");
     hammer.style.display = "none";
     hammer.classList.remove("hit");
-    score = 0;
-    lives = MAX_LIVES;
-    gameOver = false;
-    currMoleTile = null;
-    currMoleType = "regular"; 
-    currMoleHp = 0;     
-    currPlantTiles.clear();
-    stopSpawnTimers();
+
     if (!gameStarted) {
         document.getElementById("start-overlay").classList.remove("hidden");
         return;
@@ -473,7 +468,7 @@ function getShuffledTiles() {
 }
 
 function setMole() {
-    if (!gameStarted || gameOver || settingsOpen) {
+    if (!gameStarted || gameOver || settingsOpen || helpOpen) {
         return;
     }
     if (currMoleTile) {
@@ -517,7 +512,7 @@ function setMole() {
 }
 
 function setPlants() {
-    if (!gameStarted || gameOver || settingsOpen) {
+    if (!gameStarted || gameOver || settingsOpen || helpOpen) {
         return;
     }
 
@@ -586,7 +581,7 @@ function showExplosion(tile) {
 }
 
 function selectTile() {
-    if (!gameStarted || gameOver || settingsOpen || isFrozen) {
+    if (!gameStarted || gameOver || settingsOpen || helpOpen || isFrozen) {
         return;
     }
 
@@ -707,11 +702,17 @@ function closeHelp() {
     // thì bắt đầu game sau khi đóng hướng dẫn.
     if (!gameStarted) {
         startGame();
+    } else if (!gameOver) {
+        scheduleSpawnTimers();
     }
 }
 
 function openHelp() {
     helpOpen = true;
+
+    if (gameStarted && !gameOver) {
+        stopSpawnTimers();
+    }
 
     const overlay = document.getElementById("help-overlay");
     const hammer = document.getElementById("hammer");
