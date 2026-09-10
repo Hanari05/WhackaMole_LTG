@@ -1,13 +1,19 @@
 let currMoleTile;
 const currPlantTiles = new Set();
 let score = 0;
+let bestRecord = 0;
 let gameOver = false;
 let gameStarted = false;
 let settingsOpen = false;
+let helpOpen = false;
 let sfxVolume = 1;
 let bgmVolume = 1;
 let sfxMuted = false;
 let bgmMuted = false;
+let currMoleType = "regular"; 
+let currMoleHp = 1;
+let isFrozen = false;
+let freezeTimerId = null;        
 
 const BOARD_COLUMNS = 5;
 const BOARD_ROWS = 3;
@@ -15,9 +21,9 @@ const TILE_COUNT = BOARD_COLUMNS * BOARD_ROWS;
 const MAX_LIVES = 3;
 const BASE_MOLE_DELAY = 1000;
 const BASE_PLANT_DELAY = 2000;
-const SPEED_MULTIPLIER_PER_LEVEL = 0.9;
-const MIN_MOLE_DELAY = 300;
-const MIN_PLANT_DELAY = 600;
+const SPEED_MULTIPLIER_PER_LEVEL = 0.93;
+const MIN_MOLE_DELAY = 450;
+const MIN_PLANT_DELAY = 900;
 let lives = MAX_LIVES;
 let moleTimerId = null;
 let plantTimerId = null;
@@ -103,7 +109,7 @@ function saveAudioSettings() {
             bgmMuted,
         }));
     } catch (e) {
-        // ignore quota / private mode errors
+    
     }
 }
 
@@ -137,6 +143,7 @@ window.onload = function() {
     });
 
     initSettings();
+    initHelp();
     initRestart();
 }
 
@@ -155,6 +162,10 @@ function restartGame() {
         closeSettings();
     }
 
+    isFrozen = false;
+    clearTimeout(freezeTimerId);
+    document.getElementById("hammer").src = "./assets/hammer.png";
+
     score = 0;
     lives = MAX_LIVES;
     gameOver = false;
@@ -172,7 +183,14 @@ function restartGame() {
     const hammer = document.getElementById("hammer");
     hammer.style.display = "none";
     hammer.classList.remove("hit");
-
+    score = 0;
+    lives = MAX_LIVES;
+    gameOver = false;
+    currMoleTile = null;
+    currMoleType = "regular"; 
+    currMoleHp = 0;     
+    currPlantTiles.clear();
+    stopSpawnTimers();
     if (!gameStarted) {
         document.getElementById("start-overlay").classList.remove("hidden");
         return;
@@ -188,16 +206,20 @@ function restartGame() {
 function initStartScreen() {
     const overlay = document.getElementById("start-overlay");
 
-    overlay.addEventListener("click", startGame);
+    overlay.addEventListener("click",() =>{
+        if (!gameStarted) {
+            openHelp();
+        }
+    });
 
     document.addEventListener("keydown", (e) => {
-        if (gameStarted || settingsOpen) {
+        if (gameStarted || settingsOpen || helpOpen) {
             return;
         }
         if (e.key === "Tab" || e.key === "Shift") {
             return;
         }
-        startGame();
+        openHelp();
     });
 }
 
@@ -212,7 +234,13 @@ function startGame() {
 }
 
 function getSpeedLevel() {
-    return Math.floor(score / 100);
+    if (score < 100) {
+        return 0;
+    }
+
+    // Speed increases at 100, 300, 500, 700... points.
+    // Plant-count increases stay at 200, 400 and 600 points.
+    return Math.floor((score - 100) / 200) + 1;
 }
 
 function getSpawnDelay(baseDelay, minimumDelay) {
@@ -275,7 +303,30 @@ function initSettings() {
 
     initVolumeSliders();
 }
+function initHelp() {
+    const overlay = document.getElementById("help-overlay");
+    const popup = document.getElementById("help-popup");
+    const helpBtn = document.getElementById("help-btn");
 
+    helpBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+
+        if (settingsOpen) {
+            closeSettings();
+        }
+
+        openHelp();
+    });
+    overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) {
+            closeHelp();
+        }
+    });
+
+    popup.addEventListener("click", (e) => {
+        e.stopPropagation();
+    });
+}
 function initVolumeSliders() {
     document.querySelectorAll(".volume-row").forEach((row) => {
         const channel = row.dataset.channel;
@@ -398,9 +449,8 @@ function initVolumeSliders() {
 }
 
 function setupBoard() {
-    // Set up a 5-column by 3-row grid.
     for (let i = 0; i < TILE_COUNT; i++) {
-        // <div id="0-14"></div>
+
         let tile = document.createElement("div");
         tile.id = i.toString();
         tile.addEventListener("click", selectTile);
@@ -427,10 +477,34 @@ function setMole() {
         return;
     }
     if (currMoleTile) {
-        currMoleTile.innerHTML = "";
+        const oldImg = currMoleTile.querySelector("img");
+        if (oldImg) { oldImg.remove(); }
+        // currMoleTile.innerHTML = "";
     }
     let mole = document.createElement("img");
-    mole.src = "./monty-mole.png";
+
+    let rand = Math.random();
+    if (rand < 0.10) {
+        currMoleType = "bomb";
+        currMoleHp = 1;
+        mole.src = "./assets/mouse_bomb.png";
+    } else if (rand < 0.20) {
+        currMoleType = "ice";
+        currMoleHp = 1;
+        mole.src = "./assets/mouse-cold.png";
+    } else if (rand < 0.30) {
+        currMoleType = "gold";
+        currMoleHp = 1;
+        mole.src = "./assets/mouse_gold.png";
+    } else if (rand < 0.60) {
+        currMoleType = "hat";
+        currMoleHp = 2;
+        mole.src = "./assets/mouse_hat.png";
+    } else {
+        currMoleType = "regular";
+        currMoleHp = 1;
+        mole.src = "./assets/monty-mole.png";
+    }
 
     const availableTiles = getShuffledTiles().filter((tile) => !currPlantTiles.has(tile));
     if (availableTiles.length === 0) {
@@ -448,14 +522,16 @@ function setPlants() {
     }
 
     currPlantTiles.forEach((tile) => {
-        tile.innerHTML = "";
+        const oldImg = tile.querySelector("img");
+        if (oldImg) oldImg.remove();
+        // tile.innerHTML = "";
     });
     currPlantTiles.clear();
 
     const availableTiles = getShuffledTiles().filter((tile) => tile !== currMoleTile);
     availableTiles.slice(0, getPlantCount()).forEach((tile) => {
         const plant = document.createElement("img");
-        plant.src = "./piranha-plant.png";
+        plant.src = "./assets/piranha-plant.png";
         tile.appendChild(plant);
         currPlantTiles.add(tile);
     });
@@ -472,7 +548,7 @@ function updateLives() {
         const heart = document.createElement("img");
         const isLost = i >= lives;
         heart.className = isLost ? "heart lost" : "heart";
-        heart.src = "./heart.png";
+        heart.src = "./assets/heart.png";
         heart.alt = "";
         livesElement.appendChild(heart);
     }
@@ -497,19 +573,105 @@ function animateAndRemoveTarget(tile) {
     }, 180);
 }
 
+function showExplosion(tile) {
+    let explosion = document.createElement("span"); 
+    explosion.className = "explosion";
+    tile.appendChild(explosion);
+    
+    setTimeout(() => {
+        if (tile.contains(explosion)) {
+            explosion.remove();
+        }
+    }, 400); 
+}
+
 function selectTile() {
-    if (!gameStarted || gameOver || settingsOpen) {
+    if (!gameStarted || gameOver || settingsOpen || isFrozen) {
         return;
     }
 
     if (this == currMoleTile) {
-        // Clear the active reference immediately so one mole can score only once.
-        currMoleTile = null;
-        const previousSpeedLevel = getSpeedLevel();
-        score += 10;
-        document.getElementById("score").innerText = score.toString();
+        let hitType = currMoleType;
+
+        if (currMoleHp <= 0) return;
+        currMoleHp--;
+
         hitSound.currentTime = 0;
         hitSound.play().catch(() => {});
+        let img = this.querySelector("img");
+
+        if (currMoleHp > 0) {
+            if (img) img.src = "./assets/monty-mole.png";
+            return;
+        } 
+        currMoleTile = null;
+        const previousSpeedLevel = getSpeedLevel();
+        
+        if (hitType === "ice") {
+            isFrozen = true;
+            const hammer = document.getElementById("hammer");
+            hammer.src = "./assets/hammer-cold.png";
+
+            clearTimeout(freezeTimerId);
+            freezeTimerId = setTimeout(() => {
+                isFrozen = false;
+                const hammer = document.getElementById("hammer");
+                hammer.src = "./assets/hammer.png";
+            }, 3000);
+        }
+        else if (hitType === "bomb") {
+            let tileId = parseInt(this.id);
+            let row = Math.floor(tileId / BOARD_COLUMNS);
+            let col = tileId % BOARD_COLUMNS;
+            showExplosion(this);
+
+            let adjacentIds = [];
+            if (row > 0) adjacentIds.push(tileId - BOARD_COLUMNS);
+            if (row < BOARD_ROWS - 1) adjacentIds.push(tileId + BOARD_COLUMNS);
+            if (col > 0) adjacentIds.push(tileId - 1);
+            if (col < BOARD_COLUMNS - 1) adjacentIds.push(tileId + 1);
+            showExplosion(this);
+
+            let hitPlants = false;
+
+            for (let adjId of adjacentIds) {
+                let adjTile = document.getElementById(adjId.toString());
+                showExplosion(adjTile);
+                if (currPlantTiles.has(adjTile)) {
+                    hitPlants = true;
+                    currPlantTiles.delete(adjTile);
+                    animateAndRemoveTarget(adjTile);
+                }
+            }
+
+            if (hitPlants) {
+                lives = Math.max(0, lives - 1);
+                updateLives();
+                loseSound.currentTime = 0;
+                loseSound.play().catch(() => {});
+
+                if (lives === 0) {
+                    bgMusic.pause();
+                    document.getElementById("score").innerText = "GAME OVER: " + score.toString();
+                    gameOver = true;
+                    stopSpawnTimers();
+                }
+            }
+            else {
+                score -= 20;
+            }
+        }
+
+        else {
+            score += (hitType === "gold") ? 20 : 10;
+        }
+        if(!gameOver) {
+            if (score > bestRecord) {
+                bestRecord = score;
+                document.getElementById("best-record").innerText = "Best Record: " + bestRecord.toString();
+            }
+            document.getElementById("score").innerText = score.toString();
+        }
         animateAndRemoveTarget(this);
 
         if (getSpeedLevel() !== previousSpeedLevel) {
@@ -519,7 +681,6 @@ function selectTile() {
     }
 
     if (currPlantTiles.has(this)) {
-        // One plant can remove only one life, even if it is clicked repeatedly.
         currPlantTiles.delete(this);
         lives = Math.max(0, lives - 1);
         updateLives();
@@ -534,4 +695,29 @@ function selectTile() {
             stopSpawnTimers();
         }
     }
+}
+function closeHelp() {
+    helpOpen = false;
+
+    const overlay = document.getElementById("help-overlay");
+    overlay.classList.add("hidden");
+    overlay.setAttribute("aria-hidden", "true");
+
+    // Nếu đây là lần mở hướng dẫn từ màn hình Start
+    // thì bắt đầu game sau khi đóng hướng dẫn.
+    if (!gameStarted) {
+        startGame();
+    }
+}
+
+function openHelp() {
+    helpOpen = true;
+
+    const overlay = document.getElementById("help-overlay");
+    const hammer = document.getElementById("hammer");
+
+    overlay.classList.remove("hidden");
+    overlay.setAttribute("aria-hidden", "false");
+
+    hammer.style.display = "none";
 }

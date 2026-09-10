@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Whac a Mole</title>
+    <title>Whack a Mole</title>
     <link rel="stylesheet" href="mole.css">
     <script src="mole.js"></script>
 </head>
@@ -12,6 +12,9 @@
         <button id="settings-btn" type="button" aria-label="Open settings">
             <img src="settings/MenuwBox.png" alt="">
         </button>
+        <button id="help-btn" type="button" aria-label="Open instructions">
+            <img src="assets/q-button.png" alt="">
+        </button>
         <button id="restart-btn" type="button" aria-label="Restart game">
             <img src="settings/Box.png" alt="" class="control-box">
             <img src="settings/Restart.png" alt="" class="control-icon">
@@ -19,13 +22,14 @@
     </div>
 
     <h1>Whack a Mole</h1>
-    <h2 id="score">0</h2>
+    <h3 id="score">0</h3>
+    <h3 id="best-record">Best Record: 0</h3>
     <div id="lives" aria-label="3 of 3 lives remaining">
-        <img class="heart" src="heart.png" alt="">
-        <img class="heart" src="heart.png" alt="">
-        <img class="heart" src="heart.png" alt="">
+        <img class="heart" src="assets/heart.png" alt="">
+        <img class="heart" src="assets/heart.png" alt="">
+        <img class="heart" src="assets/heart.png" alt="">
     </div>
-    <img id="hammer" src="hammer.png" alt="Hammer">
+    <img id="hammer" src="assets/hammer.png" alt="Hammer">
     <div id="board-wrap">
         <div id="board">
         </div>
@@ -84,6 +88,19 @@
                         <span class="settings-footer-gap" aria-hidden="true"></span>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div id="help-overlay" class="hidden" aria-hidden="true">
+        <div id="help-popup">
+            <img
+                class="help-popup-bg"
+                src="assets/htp-table.png"
+                alt="How to play"
+            >
+
+            <div class="help-hint">
+                Nhấp ra ngoài để tắt
             </div>
         </div>
     </div>
