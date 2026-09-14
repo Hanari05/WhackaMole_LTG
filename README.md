@@ -112,7 +112,7 @@ Dự án tập trung cải tiến trải nghiệm Whack-a-Mole thông qua:
 
 * Nông Thị Hồng Lan.
 * Nguyễn Ngọc Gia Hân.
-* Bảo Diệp.
+* Lê Thị Bảo Diệp.
 * Thạch Gia Uy.
 
 **Đóng góp của Nguyễn Ngọc Gia Hân:** Đề xuất cải tiến gameplay, tham gia lập trình hệ thống trái tim và điều chỉnh độ khó. Các tính năng còn lại là kết quả phát triển chung của nhóm.
