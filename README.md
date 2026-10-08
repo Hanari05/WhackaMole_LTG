@@ -126,7 +126,6 @@ Dự án tập trung cải tiến trải nghiệm Whack-a-Mole thông qua:
 * [ ] Hoàn thiện ghi nguồn hình ảnh, âm thanh và mã nguồn nền tảng.
 
 ## Tài nguyên và ghi nguồn
-
-Hình ảnh và âm thanh bên thứ ba thuộc quyền của các tác giả tương ứng. Việc đưa tài nguyên vào repository không đồng nghĩa với quyền tự do sử dụng hoặc phân phối lại.
-
-Trước khi tái sử dụng hoặc phát hành phiên bản khác, cần kiểm tra điều kiện sử dụng của từng tài nguyên và ghi nguồn phù hợp.
+* Mã nguồn code gốc trước khi phát triển thuộc về: [Kenny Yip Coding](https://github.com/ImKennyYip/whac-a-mole)
+* Hình ảnh và âm thanh bên thứ ba thuộc quyền của các tác giả tương ứng. Việc đưa tài nguyên vào repository không đồng nghĩa với quyền tự do sử dụng hoặc phân phối lại.
+* Trước khi tái sử dụng hoặc phát hành phiên bản khác, cần kiểm tra điều kiện sử dụng của từng tài nguyên và ghi nguồn phù hợp.
