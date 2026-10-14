@@ -1,14 +1,14 @@
-# Whack-a-Mole — Gameplay mở rộng
+# Whack-a-Mole — Update Version
 
 Game đập chuột trên trình duyệt, phát triển từ cơ chế Whack-a-Mole với nhiều loại mục tiêu, hệ thống ba mạng và độ khó thay đổi theo điểm số.
 
 Người chơi cần phản xạ nhanh, phân biệt từng loại chuột và tránh các chướng ngại để duy trì lượt chơi.
 
-**[Chơi demo](https://hanari05.github.io/WhackaMole_LTG/)**
+**[Chơi demo 🐭](https://hanari05.github.io/WhackaMole_LTG/)**
 
 ## Tổng quan
 
-* **Thể loại:** Arcade, phản xạ.
+* **Thể loại:** Arcade, phản xạ. 
 * **Nền tảng:** Trình duyệt web.
 * **Công nghệ:** HTML, CSS, JavaScript.
 * **Hình thức:** Dự án nhóm phục vụ học tập và thực hành phát triển game.
